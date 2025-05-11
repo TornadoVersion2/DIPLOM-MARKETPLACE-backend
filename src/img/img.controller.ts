@@ -9,9 +9,7 @@ import { extname } from 'path';
 export class ImgController {
   @Get(':filename')
   serveImage(@Param('filename') filename: string, @Res() res: Response) {
-    console.log(filename);
     const path = join(process.cwd(), 'src', 'img', 'uploads', filename);
-    console.log('Path to file:', path);
     return res.sendFile(path);
   }
 

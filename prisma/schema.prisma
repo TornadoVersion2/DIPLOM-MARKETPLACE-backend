@@ -7,11 +7,20 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Role {
+  GUEST
+  USER
+  MANAGER
+  ADMIN
+  OWNER
+}
+
 model User {
-  id       Int     @default(autoincrement()) @id
-  email    String  @unique
+  id       Int      @default(autoincrement()) @id
+  email    String   @unique
   password String
   name     String?
+  roles    Role[]   @default([USER])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   cart     Cart[]

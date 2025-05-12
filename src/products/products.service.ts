@@ -35,4 +35,11 @@ export class ProductsService {
       where: { id },
     });
   }
+
+  async createMany(products: CreateProductDto[]): Promise<{ count: number }> {
+    return this.prisma.product.createMany({
+      data: products,
+      skipDuplicates: true,
+    });
+  }
 } 

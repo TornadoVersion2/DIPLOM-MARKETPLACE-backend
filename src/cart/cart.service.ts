@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { CreateCartDto } from './dto/create-cart.dto';
+import { IUser } from '../users/interfaces/user.interface';
 
 @Injectable()
 export class CartService {
   constructor(private prisma: PrismaService) {}
 
   async addToCart(createCartDto: CreateCartDto) {
+    console.log("Adding to cart", createCartDto)
     return this.prisma.cart.create({
       data: {
         userId: createCartDto.userId,
@@ -34,6 +36,13 @@ export class CartService {
       where: {
         id: id,
       },
+    });
+  }
+
+  async createMany(cartItems: CreateCartDto[]): Promise<{ count: number }> {
+    return this.prisma.cart.createMany({
+      data: cartItems,
+      skipDuplicates: true,
     });
   }
 } 

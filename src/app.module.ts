@@ -8,9 +8,14 @@ import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ImgModule } from './img/img.module';
 import { CartModule } from './cart/cart.module';
-
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
+    JwtModule.register({
+      secret: process.env.JWT_SECRET || 'your-secret-key',
+      signOptions: { expiresIn: '1d' },
+    }),
     ProductsModule,
     AuthModule,
     UsersModule,
@@ -19,6 +24,6 @@ import { CartModule } from './cart/cart.module';
     CartModule
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService, JwtAuthGuard],
 })
 export class AppModule {}

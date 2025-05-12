@@ -10,7 +10,13 @@ export class CartController {
 
   @Post()
   addToCart(@Body() createCartDto: CreateCartDto) {
+    console.log("Adding to cart", createCartDto)
     return this.cartService.addToCart(createCartDto);
+  }
+
+  @Post('bulk')
+  addManyToCart(@Body() createCartItemsDto: { cartItems: CreateCartDto[] }) {
+    return this.cartService.createMany(createCartItemsDto.cartItems);
   }
 
   @Get(':userId')

@@ -13,6 +13,13 @@ export class CategoriesService {
     });
   }
 
+  async createMany(createCategoriesDto: { categories: CreateCategoryDto[] }): Promise<{ count: number }> {
+    return this.prisma.category.createMany({
+      data: createCategoriesDto.categories,
+      skipDuplicates: true,
+    });
+  }
+
   async findAll() {
     return this.prisma.category.findMany({
       orderBy: {

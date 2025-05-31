@@ -34,6 +34,12 @@ export class CategoriesService {
     });
   }
 
+  async findByManager(managerId: number) {
+    return this.prisma.category.findMany({
+      where: { managerId },
+    });
+  }
+
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     return this.prisma.category.update({
       where: { id },

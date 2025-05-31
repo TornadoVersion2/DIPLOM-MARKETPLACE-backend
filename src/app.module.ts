@@ -10,6 +10,9 @@ import { ImgModule } from './img/img.module';
 import { CartModule } from './cart/cart.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { JwtModule } from '@nestjs/jwt';
+import { OrdersModule } from './orders/orders.module';
+import { FilterModule } from './filter/filter.module';
+
 @Module({
   imports: [
     JwtModule.register({
@@ -21,9 +24,11 @@ import { JwtModule } from '@nestjs/jwt';
     UsersModule,
     CategoriesModule,
     ImgModule,
-    CartModule
+    CartModule,
+    OrdersModule,
+    FilterModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtAuthGuard],
 })
-export class AppModule {}
+export class AppModule { }

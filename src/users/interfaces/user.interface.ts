@@ -7,6 +7,7 @@ export interface IUser {
   roles: Role[];
   createdAt: Date;
   updatedAt: Date;
+  managerClaim?: boolean;
 }
 
 export interface IUserWithPassword extends IUser {

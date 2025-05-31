@@ -7,17 +7,18 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../role.enum';
 
 @Controller('categories')
-@UseGuards(JwtAuthGuard)
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
   }
 
   @Post('bulk')
+  @UseGuards(JwtAuthGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
   createMany(@Body() createCategoriesDto: { categories: CreateCategoryDto[] }) {
     return this.categoriesService.createMany(createCategoriesDto);
@@ -28,18 +29,25 @@ export class CategoriesController {
     return this.categoriesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(+id);
+  @Get('category/:categoryId')
+  findOne(@Param('categoryId') categoryId: string) {
+    return this.categoriesService.findOne(+categoryId);
+  }
+
+  @Get('manager/:managerId')
+  findOneByManager(@Param('managerId') managerId: string) {
+    return this.categoriesService.findByManager(+managerId);
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
   update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
     return this.categoriesService.update(+id, updateCategoryDto);
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   @Roles(Role.ADMIN, Role.MANAGER)
   remove(@Param('id') id: string) {
     return this.categoriesService.remove(+id);

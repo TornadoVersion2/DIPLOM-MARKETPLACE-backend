@@ -15,39 +15,80 @@ enum Role {
   OWNER
 }
 
+enum OrderStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
 model User {
-  id       Int      @default(autoincrement()) @id
-  email    String   @unique
-  password String
-  name     String?
-  roles    Role[]   @default([USER])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  cart     Cart[]
+  id                Int        @id @default(autoincrement())
+  email             String     @unique
+  password          String
+  name              String?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  managerClaim      Boolean    @default(false)
+  roles             Role[]     @default([USER])
+  cart              Cart[]
+  orders            Order[]    @relation("UserOrders")
+  managedOrders     Order[]    @relation("ManagerOrders")
+  managedProducts   Product[]  @relation("ProductManager")
+  managedCategories Category[] @relation("CategoryManager")
+}
+
+model Filter {
+  id             Int              @id @default(autoincrement())
+  name           String
+  description    String?
+  possibleValue  String?
+  categoryId     Int
+  isRanged       Boolean          @default(false)
+  maxValue       Decimal          @default(0)
+  minValue       Decimal          @default(0)
+  category       Category         @relation(fields: [categoryId], references: [id])
+  Filter_Product Filter_Product[]
+}
+
+model Filter_Product {
+  id        Int     @id @default(autoincrement())
+  productId Int
+  Product   Product @relation(fields: [productId], references: [id])
+  filterId  Int
+  value     Int?    @default(0)
+  Filter    Filter  @relation(fields: [filterId], references: [id])
 }
 
 model Category {
-  id          Int       @default(autoincrement()) @id
+  id          Int       @id @default(autoincrement())
   name        String    @unique
   description String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  managerId   Int
+  manager     User      @relation("CategoryManager", fields: [managerId], references: [id])
   products    Product[]
+  Filter      Filter[]
 }
 
 model Product {
-  id          Int       @default(autoincrement()) @id
-  name        String
-  description String?
-  price       Float
-  quantity    Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  categoryId  Int?
-  category    Category? @relation(fields: [categoryId], references: [id])
-  imageUrl    String    @default("onyx.png")
-  isActive    Boolean   @default(true)
-  cart        Cart[]
+  id             Int              @id @default(autoincrement())
+  name           String
+  description    String?
+  price          Float
+  quantity       Int              @default(0)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  categoryId     Int
+  imageUrl       String           @default("onyx.png")
+  isActive       Boolean          @default(true)
+  category       Category         @relation(fields: [categoryId], references: [id])
+  cart           Cart[]
+  orders         Order[]
+  managerId      Int
+  manager        User             @relation("ProductManager", fields: [managerId], references: [id])
+  Filter_Product Filter_Product[]
 
   @@index([categoryId])
 }
@@ -63,4 +104,21 @@ model Cart {
 
   @@index([userId])
   @@index([productId])
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  productId Int
+  userId    Int // обычный пользователь
+  managerId Int // менеджер
+  status    OrderStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  product   Product     @relation(fields: [productId], references: [id])
+  user      User        @relation("UserOrders", fields: [userId], references: [id])
+  manager   User        @relation("ManagerOrders", fields: [managerId], references: [id])
+
+  @@index([productId])
+  @@index([userId])
+  @@index([managerId])
 }

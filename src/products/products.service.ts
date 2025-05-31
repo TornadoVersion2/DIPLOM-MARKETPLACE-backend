@@ -9,30 +9,91 @@ export class ProductsService {
 
   async create(createProductDto: CreateProductDto) {
     return this.prisma.product.create({
-      data: createProductDto,
+      data: {
+        name: createProductDto.name,
+        description: createProductDto.description,
+        price: createProductDto.price,
+        quantity: createProductDto.quantity,
+        imageUrl: createProductDto.imageUrl,
+        isActive: createProductDto.isActive ?? true,
+        category: {
+          connect: {
+            id: createProductDto.categoryId
+          }
+        },
+        manager: {
+          connect: {
+            id: createProductDto.managerId
+          }
+        }
+      },
+      include: {
+        category: true,
+        manager: true
+      }
     });
   }
 
   async findAll() {
-    return this.prisma.product.findMany();
+    return this.prisma.product.findMany({
+      include: {
+        category: true,
+        manager: true
+      }
+    });
   }
 
   async findOne(id: number) {
     return this.prisma.product.findUnique({
       where: { id },
+      include: {
+        category: true,
+        manager: true
+      }
+    });
+  }
+
+  async findByManager(managerId: number) {
+    return this.prisma.product.findMany({
+      where: { managerId: managerId },
+      include: {
+        category: true,
+        manager: true
+      }
     });
   }
 
   async update(id: number, updateProductDto: UpdateProductDto) {
     return this.prisma.product.update({
       where: { id },
-      data: updateProductDto,
+      data: {
+        name: updateProductDto.name,
+        description: updateProductDto.description,
+        price: updateProductDto.price,
+        quantity: updateProductDto.quantity,
+        imageUrl: updateProductDto.imageUrl,
+        isActive: updateProductDto.isActive,
+        category: updateProductDto.categoryId ? {
+          connect: {
+            id: updateProductDto.categoryId
+          }
+        } : undefined,
+        manager: updateProductDto.managerId ? {
+          connect: {
+            id: updateProductDto.managerId
+          }
+        } : undefined
+      },
+      include: {
+        category: true,
+        manager: true
+      }
     });
   }
 
   async remove(id: number) {
     return this.prisma.product.delete({
-      where: { id },
+      where: { id }
     });
   }
 

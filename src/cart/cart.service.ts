@@ -8,7 +8,6 @@ export class CartService {
   constructor(private prisma: PrismaService) {}
 
   async addToCart(createCartDto: CreateCartDto) {
-    console.log("Adding to cart", createCartDto)
     return this.prisma.cart.create({
       data: {
         userId: createCartDto.userId,

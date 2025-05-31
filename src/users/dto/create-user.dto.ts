@@ -17,4 +17,7 @@ export class CreateUserDto {
   @IsEnum(Role, { each: true })
   @IsOptional()
   roles?: Role[];
+
+  @IsOptional()
+  managerClaim?: boolean;
 } 

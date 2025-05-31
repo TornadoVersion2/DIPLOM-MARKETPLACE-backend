@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsOptional, IsBoolean, IsUrl } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsBoolean } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
@@ -16,8 +16,7 @@ export class CreateProductDto {
   quantity?: number;
 
   @IsNumber()
-  @IsOptional()
-  categoryId?: number;
+  categoryId: number;
 
   @IsString()
   @IsOptional()
@@ -26,4 +25,7 @@ export class CreateProductDto {
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
+
+  @IsNumber()
+  managerId: number;
 } 

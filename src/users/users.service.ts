@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, UseGuards } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -8,7 +8,7 @@ import { Role } from '../role.enum';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createUserDto: CreateUserDto): Promise<IUser> {
     const existingUser = await this.findByEmail(createUserDto.email);
@@ -48,9 +48,23 @@ export class UsersService {
     const { password, ...result } = user;
     return result as IUser;
   }
+  async findManagerClaims(): Promise<IUser[]> {
+    const users = await this.prisma.user.findMany({
+      where: {
+        NOT: {
+          roles: {
+            has: Role.MANAGER,
+          },
+        },
+        managerClaim: true
+      },
+    });
+    console.log(users)
+    return users as IUser[];
+  }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<IUser> {
-    await this.findById(id); // Check if user exists
+    await this.findById(id);
 
     const data: any = { ...updateUserDto };
     if (updateUserDto.password) {
@@ -65,8 +79,24 @@ export class UsersService {
     return result as IUser;
   }
 
+  async approveManager(id: number): Promise<IUser> {
+    var manager = await this.findById(id);
+
+    if (manager.roles.includes(Role.MANAGER))
+      throw Error("Пользователь уже является менеджером")
+    if (!manager.managerClaim)
+      throw Error("Пользователь не собирался становится менеджером")
+    console.log("filter:", manager.roles.filter((role) => role != Role.USER).push(Role.MANAGER))
+    manager.roles = manager.roles.filter((role) => role != Role.USER)
+    manager.roles.filter((role) => role != Role.USER).push(Role.MANAGER)
+    manager.roles.push(Role.MANAGER)
+    console.log("Manager roles: ", manager.roles)
+    manager.managerClaim = false
+    return this.update(id, manager)
+  }
+
   async delete(id: number): Promise<IUser> {
-    await this.findById(id); 
+    await this.findById(id);
 
     const user = await this.prisma.user.delete({
       where: { id },

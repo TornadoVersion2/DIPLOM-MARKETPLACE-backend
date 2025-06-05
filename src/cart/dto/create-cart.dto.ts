@@ -1,11 +1,12 @@
 import { IsNumber, IsNotEmpty } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateCartDto {
   @IsNumber()
-  @IsNotEmpty()
+  @Type(() => Number)
   userId: number;
 
   @IsNumber()
-  @IsNotEmpty()
+  @Type(() => Number)
   productId: number;
 } 

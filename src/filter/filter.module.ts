@@ -11,5 +11,6 @@ import { JwtModule } from '@nestjs/jwt';
   })],
   controllers: [FilterController],
   providers: [FilterService, PrismaService],
+  exports: [FilterService]
 })
 export class FilterModule { }

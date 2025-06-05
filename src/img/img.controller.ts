@@ -24,7 +24,7 @@ export class ImgController {
         },
       }),
       fileFilter: (req, file, cb) => {
-        if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
           return cb(new BadRequestException('Only image files are allowed!'), false);
         }
         cb(null, true);

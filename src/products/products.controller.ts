@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { PaginateDto, SearchDto, TotalPagesDto } from './dto/paginate.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CategoriesService } from '../categories/categories.service'
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../role.enum';
 
@@ -24,13 +26,30 @@ export class ProductsController {
     return this.productsService.createMany(createProductsDto.products);
   }
 
+  @Get('/search')
+  findByQuery(@Query() searchDto: SearchDto) {
+    return this.productsService.search(searchDto.searchQuery.toLowerCase(), searchDto.currentPage, searchDto.itemsPerPage, searchDto.selectedCategoryId, searchDto?.filters)
+  }
+
+  @Get('/totalPages')
+  getTotalPages(@Query() totalPagesDto: TotalPagesDto) {
+    return this.productsService.getTotalPages(totalPagesDto.itemsPerPage)
+  }
+
+  @Get('/paginate')
+  paginate(@Query() paginateDto: PaginateDto) {
+    return this.productsService.paginate(paginateDto.currentPage, paginateDto.itemsPerPage)
+  }
+
+
   @Get()
   findAll() {
     return this.productsService.findAll();
   }
 
-  @Get(':id')
+  @Get('product/:id')
   findOne(@Param('id') id: string) {
+    console.log("id: ", id)
     return this.productsService.findOne(+id);
   }
 

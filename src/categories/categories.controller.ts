@@ -8,7 +8,7 @@ import { Role } from '../role.enum';
 
 @Controller('categories')
 export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) {}
+  constructor(private readonly categoriesService: CategoriesService) { }
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -32,6 +32,12 @@ export class CategoriesController {
   @Get('category/:categoryId')
   findOne(@Param('categoryId') categoryId: string) {
     return this.categoriesService.findOne(+categoryId);
+  }
+
+  @Get('search/:searchQuery')
+  search(@Param('searchQuery') searchQuery: string) {
+    console.log(searchQuery)
+    return this.categoriesService.search(searchQuery);
   }
 
   @Get('manager/:managerId')

@@ -44,6 +44,12 @@ export class FilterService {
     });
   }
 
+  async findByFilterName(name: string) {
+    return this.prisma.filter.findMany({
+      where: { name }
+    });
+  }
+
   async findByCategory(categoryId: number) {
     return this.prisma.filter.findMany({
       where: {

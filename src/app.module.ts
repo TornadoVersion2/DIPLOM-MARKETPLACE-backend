@@ -26,7 +26,7 @@ import { FilterModule } from './filter/filter.module';
     ImgModule,
     CartModule,
     OrdersModule,
-    FilterModule
+    FilterModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtAuthGuard],

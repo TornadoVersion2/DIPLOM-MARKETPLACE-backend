@@ -2,6 +2,7 @@ import { CreateOrderDto } from "./create-order.dto";
 import { PartialType } from "@nestjs/mapped-types";
 import { IsEnum, IsNumber, IsOptional } from 'class-validator'
 import { OrderStatus } from '@prisma/client'
+import { Type } from 'class-transformer';
 
 export class UpdateOrderDto extends PartialType(CreateOrderDto) {
   @IsOptional()
@@ -10,5 +11,6 @@ export class UpdateOrderDto extends PartialType(CreateOrderDto) {
 
   @IsOptional()
   @IsNumber()
+  @Type(() => Number)
   managerId?: number
 } 

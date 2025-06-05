@@ -1,11 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { CreateProductDto } from './dto/create-product.dto';
+import { CreateProductDto, Product } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { PaginateDto } from './dto/paginate.dto';
+import { Prisma } from '@prisma/client';
+import { Filter } from '../filter/dto/create-filter.dto'
+import { CategoriesService } from '../categories/categories.service'
+import { FilterService } from '../filter/filter.service';
+import { filter } from 'rxjs';
+import { FilterProduct } from 'src/filter/dto/create-filter-product.dto';
+
 
 @Injectable()
 export class ProductsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService,
+    private categoriesService: CategoriesService,
+    private filterService: FilterService) { }
 
   async create(createProductDto: CreateProductDto) {
     return this.prisma.product.create({
@@ -32,6 +42,117 @@ export class ProductsService {
         manager: true
       }
     });
+  }
+
+  async getTotalPages(itemsPerPage: number = 10) {
+    return Math.ceil(await this.prisma.product.count() / itemsPerPage)
+  }
+
+  async getTotalProducts() {
+    return this.prisma.product.count()
+  }
+
+  async filtrate(filters: { [key: string]: string }) {
+
+  }
+
+  // async findFilters(filters: Filter[]): Promise<FilterProduct[]> {
+  //   return this.prisma.filter_Product.findMany({
+  //     where: { filterId: { in: filters.map(filter => filter.id) } }
+  //   })
+  // }
+
+  // async findProductsByFilters(filters: FilterProduct[]): Promise<Product[]> {
+  //   return this.prisma.product.findMany({
+  //     where: { id: { in: filters.map(filter => filter.productId) } }
+  //   })
+  // }
+
+  async search(searchQuery: string, currentPage: number, itemsPerPage: number, selectedCategoryId?: number, filters?: Filter[]) {
+    // console.log("searchQuery: ", searchQuery)
+    // console.log("selectedCategoryId: ", selectedCategoryId)
+    let whereFilter: Prisma.ProductWhereInput
+    if (selectedCategoryId > 0 && filters) {
+      whereFilter = {
+        id: {
+          in: (await this.prisma.filter_Product.findMany({
+            where: { filterId: { in: filters.map(filter => filter.id) } }
+          })).map(filter => filter.productId)
+        }
+      }
+    }
+
+    let whereQueryAndCategory: Prisma.ProductWhereInput
+
+    if (searchQuery != '') {
+      if (selectedCategoryId === 0) {
+        whereQueryAndCategory = {
+          OR: [
+            { name: { contains: searchQuery, mode: 'insensitive' } },
+            { description: { contains: searchQuery, mode: 'insensitive' } },
+          ]
+        }
+      }
+      else {
+        whereQueryAndCategory = {
+          AND: [{
+            OR: [
+              { name: { contains: searchQuery, mode: 'insensitive' } },
+              { description: { contains: searchQuery, mode: 'insensitive' } },
+            ]
+          },
+          { categoryId: selectedCategoryId },
+          ]
+        }
+      }
+    }
+    else if (selectedCategoryId === 0) {
+      return {
+        products: await this.paginate(currentPage, itemsPerPage), totalProducts: await this.getTotalProducts()
+      }
+    } else {
+      whereQueryAndCategory = {
+        categoryId: selectedCategoryId
+      }
+    }
+
+    console.log("Final Where: ", {
+      ...whereQueryAndCategory,
+      ...whereFilter
+    })
+    const [products, totalProducts] = await Promise.all([
+      this.prisma.product.findMany({
+        where: {
+          ...whereQueryAndCategory,
+          ...whereFilter
+        },
+        skip: itemsPerPage * (currentPage - 1),
+        take: itemsPerPage,
+        include: {
+          category: true,
+          manager: true
+        }
+      }),
+      this.prisma.product.count({
+        where: {
+          ...whereQueryAndCategory,
+          ...whereFilter
+        }
+      })
+    ]);
+    return { products, totalProducts }
+  }
+
+  async paginate(currentPage: number, itemsPerPage: number) {
+    return this.prisma.product.findMany({
+      skip: itemsPerPage * (currentPage - 1),
+      take: itemsPerPage,
+
+      include: {
+        category: true,
+        manager: true
+      }
+    })
   }
 
   async findAll() {

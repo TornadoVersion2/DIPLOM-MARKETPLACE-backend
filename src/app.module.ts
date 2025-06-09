@@ -12,6 +12,8 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { OrdersModule } from './orders/orders.module';
 import { FilterModule } from './filter/filter.module';
+import { FilterDescriptionModule } from './filter-description/filter-description.module';
+import { FilterProductModule } from './filter-product/filter-product.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { FilterModule } from './filter/filter.module';
     CartModule,
     OrdersModule,
     FilterModule,
+    FilterDescriptionModule,
+    FilterProductModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, JwtAuthGuard],

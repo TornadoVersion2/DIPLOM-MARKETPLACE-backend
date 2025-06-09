@@ -38,17 +38,22 @@ model User {
   managedCategories Category[] @relation("CategoryManager")
 }
 
+model FilterDescription {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id])
+  measureName String?
+  Filter      Filter[]
+}
+
 model Filter {
-  id             Int              @id @default(autoincrement())
-  name           String
-  description    String?
-  possibleValue  String?
-  categoryId     Int
-  isRanged       Boolean          @default(false)
-  maxValue       Decimal          @default(0)
-  minValue       Decimal          @default(0)
-  category       Category         @relation(fields: [categoryId], references: [id])
-  Filter_Product Filter_Product[]
+  id                Int               @id @default(autoincrement())
+  descriptionId     Int
+  filterDescription FilterDescription @relation(fields: [descriptionId], references: [id])
+  possibleValue     String?
+  Filter_Product    Filter_Product[]
 }
 
 model Filter_Product {
@@ -56,20 +61,20 @@ model Filter_Product {
   productId Int
   Product   Product @relation(fields: [productId], references: [id])
   filterId  Int
-  value     Int?    @default(0)
   Filter    Filter  @relation(fields: [filterId], references: [id])
+  value     Decimal @default(0)
 }
 
 model Category {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
-  description String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  managerId   Int
-  manager     User      @relation("CategoryManager", fields: [managerId], references: [id])
-  products    Product[]
-  Filter      Filter[]
+  id                Int                 @id @default(autoincrement())
+  name              String              @unique
+  description       String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  managerId         Int
+  manager           User                @relation("CategoryManager", fields: [managerId], references: [id])
+  products          Product[]
+  FilterDescription FilterDescription[]
 }
 
 model Product {

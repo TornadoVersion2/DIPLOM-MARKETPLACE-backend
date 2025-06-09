@@ -40,5 +40,6 @@ export class SearchDto {
     itemsPerPage: number = 10;
 
     @IsOptional()
-    filters: Filter[];
+    // @Type(() => Number[])
+    filters: number[];
 } 

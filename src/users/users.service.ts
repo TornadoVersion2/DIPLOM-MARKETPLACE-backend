@@ -26,6 +26,7 @@ export class UsersService {
     const { password, ...result } = user;
     return result as IUser;
   }
+  
   async findByEmail(email: string): Promise<IUserWithPassword | null> {
     const user = await this.prisma.user.findUnique({
       where: { email },

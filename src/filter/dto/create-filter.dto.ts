@@ -3,40 +3,21 @@ import { IsString, IsNotEmpty, IsOptional, IsNumber, IsBoolean, isNumber } from 
 import { Type } from 'class-transformer';
 
 export class CreateFilterDto {
-    @IsString()
-    @IsNotEmpty()
-    @Type(() => String)
-    name: string;
-
-    @IsString()
-    @IsOptional()
-    @Type(() => String)
-    description?: string;
+    @IsNumber()
+    @Type(() => Number)
+    descriptionId: number;
 
     @IsString()
     @Type(() => String)
     possibleValue?: string
 
     @IsNumber()
+    @IsOptional()
     @Type(() => Number)
-    categoryId: number;
-
-    @IsBoolean()
-    @Type(() => Boolean)
-    isRanged?: boolean;
-
-    @IsNumber()
-    @IsOptional()
-    @Type(() => String)
-    maxValue?: number;
-
-    @IsNumber()
-    @IsOptional()
-    @Type(() => String)
-    minValue?: number;
+    value: number;
 }
 
-export class Filter extends CreateFilterDto {    
+export class Filter extends CreateFilterDto {
     @IsNumber()
     @Type(() => Number)
     id: number;

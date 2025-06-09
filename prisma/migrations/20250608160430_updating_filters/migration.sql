@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Filter_Product" ALTER COLUMN "value" SET DEFAULT 0,
+ALTER COLUMN "value" SET DATA TYPE DECIMAL(65,30);

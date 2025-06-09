@@ -26,8 +26,8 @@ export class ProductsController {
     return this.productsService.createMany(createProductsDto.products);
   }
 
-  @Get('/search')
-  findByQuery(@Query() searchDto: SearchDto) {
+  @Post('/search')
+  findByQuery(@Body() searchDto: SearchDto) {
     return this.productsService.search(searchDto.searchQuery.toLowerCase(), searchDto.currentPage, searchDto.itemsPerPage, searchDto.selectedCategoryId, searchDto?.filters)
   }
 

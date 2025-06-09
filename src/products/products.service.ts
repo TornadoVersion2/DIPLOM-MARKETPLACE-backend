@@ -8,14 +8,12 @@ import { Filter } from '../filter/dto/create-filter.dto'
 import { CategoriesService } from '../categories/categories.service'
 import { FilterService } from '../filter/filter.service';
 import { filter } from 'rxjs';
-import { FilterProduct } from 'src/filter/dto/create-filter-product.dto';
+// import { FilterProduct } from 'src/filter_Product/dto/create-filter-product.dto';
 
 
 @Injectable()
 export class ProductsService {
-  constructor(private prisma: PrismaService,
-    private categoriesService: CategoriesService,
-    private filterService: FilterService) { }
+  constructor(private prisma: PrismaService) { }
 
   async create(createProductDto: CreateProductDto) {
     return this.prisma.product.create({
@@ -68,19 +66,46 @@ export class ProductsService {
   //   })
   // }
 
-  async search(searchQuery: string, currentPage: number, itemsPerPage: number, selectedCategoryId?: number, filters?: Filter[]) {
+  async search(searchQuery: string, currentPage: number, itemsPerPage: number, selectedCategoryId = 0, filters?: number[]) {
     // console.log("searchQuery: ", searchQuery)
     // console.log("selectedCategoryId: ", selectedCategoryId)
     let whereFilter: Prisma.ProductWhereInput
-    if (selectedCategoryId > 0 && filters) {
+    // console.log("Filters: ", filters)
+    // console.log("tyype: ", typeof (filters))
+
+
+    // if (selectedCategoryId > 0 && filters) {
+    //   whereFilter = {
+    //     id: {
+    //       in: (await this.prisma.filter_Product.findMany({
+    //         where: { filterId: { in: filters } }
+    //       })).map(filter => filter.productId)
+    //     }
+    //   }
+    // }
+
+    // if (selectedCategoryId > 0 && filters) {
+    //   whereFilter = {
+    //     id: {
+    //       in: (await this.prisma.filter_Product.findMany({
+    //         where: { filterId: {} }
+    //       })).map(filter => filter.productId)
+    //     }
+    //   }
+    // }
+    if (filters && filters.length > 0 && selectedCategoryId > 0) {
+      // Для каждого фильтра добавляем условие, что товар должен иметь этот фильтр
       whereFilter = {
-        id: {
-          in: (await this.prisma.filter_Product.findMany({
-            where: { filterId: { in: filters.map(filter => filter.id) } }
-          })).map(filter => filter.productId)
-        }
-      }
+        AND: filters.map(filterId => ({
+          Filter_Product: {
+            some: {
+              filterId: filterId
+            }
+          }
+        }))
+      };
     }
+
 
     let whereQueryAndCategory: Prisma.ProductWhereInput
 

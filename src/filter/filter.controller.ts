@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { FilterService } from './filter.service';
 import { CreateFilterDto } from './dto/create-filter.dto';
 import { UpdateFilterDto } from './dto/update-filter.dto';
-import { CreateFilterProductDto } from './dto/create-filter-product.dto';
-import { UpdateFilterProductDto } from './dto/update-filter-product.dto';
+// import { CreateFilterProductDto } from './dto/create-filter-product.dto';
+// import { UpdateFilterProductDto } from './dto/update-filter-product.dto';
 import { Roles } from '../auth/decorators/roles.decorator'
 import { Role } from '../role.enum'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
@@ -13,10 +13,10 @@ export class FilterController {
   constructor(private readonly filterService: FilterService) { }
 
   @UseGuards(JwtAuthGuard)
-  @Roles(Role.MANAGER)
+  @Roles(Role.MANAGER, Role.ADMIN)
   @Post()
   create(@Body() createFilterDto: CreateFilterDto) {
-    return this.filterService.create(createFilterDto);
+      return this.filterService.create(createFilterDto);
   }
 
   @Get()
@@ -48,34 +48,5 @@ export class FilterController {
     return this.filterService.remove(+id);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Roles(Role.MANAGER)
-  @Post('/product')
-  createFilterProduct(@Body() createFilterProductDto: CreateFilterProductDto) {
-    return this.filterService.createProductFilter(createFilterProductDto);
-  }
 
-  @Get('/product')
-  findFiilterProduct() {
-    return this.filterService.findAllProductFilter();
-  }
-
-  @Get('/product/:id')
-  findOneFilterProduct(@Param('id') id: string) {
-    return this.filterService.findOneProductFilter(+id);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Roles(Role.MANAGER)
-  @Patch('/product/:id')
-  updateFilterProduct(@Param('id') id: string, @Body() updateFilterProductDto: UpdateFilterProductDto) {
-    return this.filterService.updateProductFilter(+id, updateFilterProductDto);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Roles(Role.MANAGER)
-  @Delete('/product/:id')
-  removeFilterProduct(@Param('id') id: string) {
-    return this.filterService.removeProductFilter(+id);
-  }
 }

@@ -27,6 +27,11 @@ export class FilterProductController {
     return this.FilterProductService.findOneProductFilter(+id);
   }
 
+  @Get('/product/product/:ProductId')
+  findByProduct(@Param('ProductId') productId: string) {
+    return this.FilterProductService.findByProduct(+productId);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Roles(Role.MANAGER)
   @Patch('/product/:id')

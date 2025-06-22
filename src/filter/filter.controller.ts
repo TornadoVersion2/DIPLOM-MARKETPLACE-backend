@@ -34,6 +34,16 @@ export class FilterController {
     return this.filterService.findByCategory(+categoryId)
   }
 
+  @Get('/prod/:productId')
+  findByProduct(@Param('productId') productId: string) {
+    return this.filterService.findByProduct(+productId)
+  }
+
+  @Get('/prod/description/:productId')
+  findDescriptionByProduct(@Param('productId') productId: string) {
+    return this.filterService.findDescriptionByProduct(+productId)
+  }
+
   @UseGuards(JwtAuthGuard)
   @Roles(Role.MANAGER)
   @Patch(':id')

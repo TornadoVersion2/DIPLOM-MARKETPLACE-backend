@@ -10,10 +10,10 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) { }
 
 
-  @Post('/bulk')
-  createBulk(@Body() createOrderDto: CreateOrderDto[]) {
-    return this.ordersService.createBulk(createOrderDto)
-  }
+  // @Post('/bulk')
+  // createBulk(@Body() createOrderDto: CreateOrderDto[]) {
+  //   return this.ordersService.createBulk(createOrderDto)
+  // }
 
   @Post()
   create(@Body() createOrderDto: CreateOrderDto) {

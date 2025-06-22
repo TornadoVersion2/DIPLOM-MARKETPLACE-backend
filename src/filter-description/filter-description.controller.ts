@@ -22,6 +22,11 @@ export class FilterDescriptionController {
     return this.filterDescriptionService.findByCategory(+id);
   }
 
+  // @Get('/product/:id')
+  // findByProduct(@Param('id') id: string) {
+  //   return this.filterDescriptionService.findDescriptionByProduct(+id);
+  // }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.filterDescriptionService.findOne(+id);

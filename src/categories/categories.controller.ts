@@ -12,14 +12,14 @@ export class CategoriesController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @Roles(Role.ADMIN)
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
   }
 
   @Post('bulk')
   @UseGuards(JwtAuthGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @Roles(Role.ADMIN)
   createMany(@Body() createCategoriesDto: { categories: CreateCategoryDto[] }) {
     return this.categoriesService.createMany(createCategoriesDto);
   }
@@ -47,14 +47,14 @@ export class CategoriesController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @Roles(Role.ADMIN)
   update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
     return this.categoriesService.update(+id, updateCategoryDto);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
+  @Roles(Role.ADMIN)
   remove(@Param('id') id: string) {
     return this.categoriesService.remove(+id);
   }

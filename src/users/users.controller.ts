@@ -16,10 +16,10 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @Post('bulk')
-  async createMany(@Body() users: CreateUserDto[]) {
-    return this.usersService.createMany(users);
-  }
+  // @Post('bulk')
+  // async createMany(@Body() users: CreateUserDto[]) {
+  //   return this.usersService.createMany(users);
+  // }
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<IUser> {
@@ -38,7 +38,6 @@ export class UsersController {
   async updateOne(@Param('id') id: string, updateUserDto: UpdateUserDto): Promise<IUser> {
     return this.usersService.update(+id, updateUserDto);
   }
-
 
   @UseGuards(JwtAuthGuard)
   @Roles(Role.ADMIN)

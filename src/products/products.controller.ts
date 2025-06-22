@@ -19,12 +19,12 @@ export class ProductsController {
     return this.productsService.create(createProductDto);
   }
 
-  @Post('bulk')
-  @UseGuards(JwtAuthGuard)
-  @Roles(Role.ADMIN, Role.MANAGER)
-  createMany(@Body() createProductsDto: { products: CreateProductDto[] }) {
-    return this.productsService.createMany(createProductsDto.products);
-  }
+  // @Post('bulk')
+  // @UseGuards(JwtAuthGuard)
+  // @Roles(Role.ADMIN, Role.MANAGER)
+  // createMany(@Body() createProductsDto: { products: CreateProductDto[] }) {
+  //   return this.productsService.createMany(createProductsDto.products);
+  // }
 
   @Post('/search')
   findByQuery(@Body() searchDto: SearchDto) {
@@ -49,7 +49,7 @@ export class ProductsController {
 
   @Get('product/:id')
   findOne(@Param('id') id: string) {
-    console.log("id: ", id)
+    // console.log("id: ", id)
     return this.productsService.findOne(+id);
   }
 

@@ -8,8 +8,6 @@ import { Filter } from '../filter/dto/create-filter.dto'
 import { CategoriesService } from '../categories/categories.service'
 import { FilterService } from '../filter/filter.service';
 import { filter } from 'rxjs';
-// import { FilterProduct } from 'src/filter_Product/dto/create-filter-product.dto';
-
 
 @Injectable()
 export class ProductsService {
@@ -53,18 +51,6 @@ export class ProductsService {
   async filtrate(filters: { [key: string]: string }) {
 
   }
-
-  // async findFilters(filters: Filter[]): Promise<FilterProduct[]> {
-  //   return this.prisma.filter_Product.findMany({
-  //     where: { filterId: { in: filters.map(filter => filter.id) } }
-  //   })
-  // }
-
-  // async findProductsByFilters(filters: FilterProduct[]): Promise<Product[]> {
-  //   return this.prisma.product.findMany({
-  //     where: { id: { in: filters.map(filter => filter.productId) } }
-  //   })
-  // }
 
   async search(searchQuery: string, currentPage: number, itemsPerPage: number, selectedCategoryId = 0, filters?: number[]) {
     // console.log("searchQuery: ", searchQuery)

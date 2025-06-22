@@ -6,7 +6,7 @@ import { FilterDescription } from 'src/filter-description/types/filter-descripti
 
 @Injectable()
 export class FilterDescriptionService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService,) { }
 
   async create(createFilterDescriptionDto: CreateFilterDescriptionDto): Promise<FilterDescription> {
     const description = await this.prisma.filterDescription.findFirst({

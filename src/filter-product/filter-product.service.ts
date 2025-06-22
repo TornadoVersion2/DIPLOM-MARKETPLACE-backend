@@ -28,6 +28,12 @@ export class FilterProductService {
     });
   }
 
+  async findByProduct(productId: number) {
+    return this.prisma.filter_Product.findMany({
+      where: { productId },
+    });
+  }
+
   async findOneProductFilter(id: number) {
     return this.prisma.filter_Product.findUnique({
       where: { id }
